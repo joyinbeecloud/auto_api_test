@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>auto_test</title>
+
+    <style>
+        html,body{width: 100%; max-width: 640px; padding: 0; margin: 0 auto; font-size: 16px;}
+        input{max-width: 250px; margin: 5px; height: 20px;}
+        select{margin: 7px 0; height: 24px;}
+        .s1 div{color: #FF6C2C;}
+        .s2 div{color: #FFBB2C;}
+    </style>
+</head>
+<body>
+<form id="form" method="post" action="/bill" target="_blank">
+host<select id="host" name="host">
+    <option value="https://apidynamic.beecloud.cn/2">api.beecloud.cn</option>
+    <option value="https://api8271.beecloud.cn/2">123.53.82.71</option>
+</select>
+    <input type="button" id="lala" name = "lala" value="start" />
+
+</form>
+
+<script language="JavaScript" src="static/jquery-2.1.4.min.js"></script>
+<script language="JavaScript" src="static/jquery.md5.js"></script>
+<script language="JavaScript">
+     $("#lala").click(function () {
+         alert("11")
+         $("#form").submit();
+     })
+</script>
+
+</body>
+</html>
