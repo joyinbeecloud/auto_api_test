@@ -9,6 +9,10 @@ import time
 import uuid,requests
 from elasticsearch import Elasticsearch
 
+success = 0
+fail = 0
+all_process = 13
+
 def browser_Dri(url):
     browser = webdriver.Firefox()#浏览器的操作
     browser.get(url)
@@ -37,47 +41,70 @@ def status_query(host,params):
         resp = request_post(temp_url,params)
         time.sleep(2)
     return resp
+    #加判断成功失败
 
-def repeat_query_bill(fp,host,query_bill_para):
+def repeat_query_bill(fp,host,query_bill_para, channel):
     query_bill_res = query_bill(host, query_bill_para)
-    print("bills:%r" % query_bill_res)
+    # print("bills:%r" % query_bill_res)
     for n in range(0,30):
         if query_bill_res == []:
             query_bill_res = query_bill(host, query_bill_para)
-            print("bills is empty")
+            # print("bills is empty")
             time.sleep(2)
         else:
             break
+    if query_bill_res == [] :
+        fail++
+        print("----- Failed: bill insert fail " + channel)
+        print("---------------success:" + str(success) + "/" + str(all_process) + "-----------fail:" + fail + "/" + str(all_process) + "-------------")
+        fp.write("----- Failed bill insert:" + channel + "\n" )
+        fp.write("---------------success:" + str(success) + "/" + str(all_process) + "-----------fail:" + fail + "/" + str(all_process) + "-------------\n")
+        return 0
+    
 
     spay_result = query_bill_res[0]["spay_result"]
     for m in range(0,60):
         if spay_result != True:
             query_bill_res = query_bill(host, query_bill_para)
             spay_result = query_bill_res[0]["spay_result"]
-            print("bills:%r" % spay_result)
+            # print("bills:%r" % spay_result)
             time.sleep(2)
         else:
             break
     if spay_result==True:
-        fp.write("spay_result is true    ")
+        fp.write("----- log: spay_result is true    \n")
+        return 1
+    else:
+        fail++
+        print("----- Failed: bill insert fail " + channel)
+        print("---------------success:" + success + "/" + all_process + "-----------fail:" + fail + "/" + all_process + "-------------")
+        fp.write("----- Failed bill insert:" + channel + "\n" )
+        fp.write("---------------success:" + success + "/" + all_process + "-----------fail:" + fail + "/" + all_process + "-------------\n")
+        return 0
 
 def repeat_query_webhook(fp,bill_no,channel):
     webhook_res = webhook_query(bill_no)
     for i in range(0, 30):
         webhook_res_str = str(webhook_res)
         if "'reponse_body': 'success'" in webhook_res_str:
-            print("webhook success")
-            print(channel+"pass")
-            fp.write("webhook success")
-            fp.write("\n"+channel+"pass")
+            success++
+            print("----- log: webhook success" + channel + "pass")
+            print("---------------success:" + success + "/" + all_process + "-----------fail:" + fail + "/" + all_process + "-------------")
+            fp.write("----- log: webhook success" + channel + "pass\n")
+            fp.write("---------------success:" + success + "/" + all_process + "-----------fail:" + fail + "/" + all_process + "-------------\n")
             break
         else:
             webhook_res = webhook_query(bill_no)
             time.sleep(5)
     if "'reponse_body': 'success'" not in webhook_res_str:
-        print("success not in webhook's response")
-        fp.write("success not in webhook's response")
+        fail++
+        print("----- Failed: success not in webhook's response" + channel)
+        print("---------------success:" + success + "/" + all_process + "-----------fail:" + fail + "/" + all_process + "-------------")
+        fp.write("----- Failed: success not in webhook's response" + channel + "\n" )
+        fp.write("---------------success:" + success + "/" + all_process + "-----------fail:" + fail + "/" + all_process + "-------------\n")
+        return 0
 if __name__=="__main__":
+    fail=0
     file_name = "E:\python learning\\auto_api_test\\auto_api_log.txt"
     fp = open(file_name, 'a+')
     tt=int(time.time())*1000
@@ -144,9 +171,12 @@ if __name__=="__main__":
                 time.sleep(2)
                 if s_ch == "BC_WX_SCAN" or s_ch == "BC_ALI_SCAN" or s_ch == "ALI_SCAN" or s_ch == "WX_SCAN":
                     status_query(host,query_bill_para)
-                repeat_query_bill(fp,host,query_bill_para)
 
-                repeat_query_webhook(fp,bill_no,s_ch)
+                query_bill_res=repeat_query_bill(fp,host,query_bill_para,s_ch)
+                if query_bill_res == 1 :
+                    repeat_query_webhook(fp,bill_no,s_ch)
+                else:
+                    continue
                 current_handle = browser.current_window_handle
                 all_handles = browser.window_handles
 
@@ -155,6 +185,7 @@ if __name__=="__main__":
                         browser.switch_to_window(handle)
                         browser.close()
                         browser.switch_to_window(current_handle)
+
 
     #鉴权接口
 
