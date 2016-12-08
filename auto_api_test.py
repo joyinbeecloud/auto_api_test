@@ -5,7 +5,6 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import Select,WebDriverWait
 from common_func import *
 from entity import *
-from entity import *
 import time
 import uuid,requests
 from elasticsearch import Elasticsearch
@@ -87,6 +86,7 @@ if __name__=="__main__":
     now_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
     # file_name = "E:\python learning\\api-test\Result\Result" + str(int(time.time())) + ".txt"
     browser.find_element_by_id("get_app_submit").click()
+
     for n in range(1,2):
         sel_app = Select(browser.find_element_by_id("app_select"))
         if n == 0:
@@ -99,10 +99,10 @@ if __name__=="__main__":
         print(app_id)
         app_secret = browser.find_element_by_id("app_secret").get_attribute("value")
         sign = sign_md5(app_id+str(tt)+app_secret)
-        query_bill_para={
-            "app_id":app_id,
-            "app_sign":sign,
-            "timestamp":tt
+        query_bill_para = {
+            "app_id": app_id,
+            "app_sign": sign,
+            "timestamp": tt
         }
         if n == 0:
             parentChannel_l=['BC','ALI','WX','UN']
@@ -119,6 +119,7 @@ if __name__=="__main__":
         #     'ALI': ['ALI_WEB', 'ALI_WAP', 'ALI_QRCODE', 'ALI_OFFLINE_QRCODE', 'ALI_SCAN'],
         #     'WX': ['WX_NATIVE', 'WX_SCAN'],
         #     'UN': ['UN_WEB', 'UN_WAP']}
+        #支付，bills，status接口
         for p_ch in parentChannel_l:
             sel_parentChannel.select_by_value(p_ch)
             time.sleep(2)
@@ -146,7 +147,16 @@ if __name__=="__main__":
                 repeat_query_bill(fp,host,query_bill_para)
 
                 repeat_query_webhook(fp,bill_no,s_ch)
+                current_handle = browser.current_window_handle
+                all_handles = browser.window_handles
 
+                for handle in all_handles:
+                    if handle != current_handle:
+                        browser.switch_to_window(handle)
+                        browser.close()
+                        browser.switch_to_window(current_handle)
+
+    #鉴权接口
 
 
 
