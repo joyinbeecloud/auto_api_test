@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-<form id="form" method="post" action="/bill" target="_blank">
+<form id="form" method="post" action="/bill" target="_parent">
 host<select id="host" name="host">
     <option value="https://apidynamic.beecloud.cn/2">api.beecloud.cn</option>
     <option value="https://api8271.beecloud.cn/2">123.53.82.71</option>
@@ -22,12 +22,45 @@ host<select id="host" name="host">
 
 </form>
 
+<div id="sel" name="del">
+    </div>
 <script language="JavaScript" src="static/jquery-2.1.4.min.js"></script>
 <script language="JavaScript" src="static/jquery.md5.js"></script>
 <script language="JavaScript">
      $("#lala").click(function () {
-         alert("11")
-         $("#form").submit();
+         //host=$.("#host").val()
+
+         $.ajax({
+             type: "POST",
+             //contentType: "application/json; charset=utf-8",
+             dataType: "json",
+             url: "/bill",
+//                     url:"http://192.168.1.123:8887/data/external/get.apps.php",
+             data:{'host':$("#host").val()},//ajax向接口传参数
+             //jsonp: 'callback',
+//                     jsonpCallback: 'aaa',//定义回调的方法名
+             success: function(resp_dict) {
+                 //alert(resp_dict);
+                 console.log(resp_dict.channel);
+                 //$('#sel').html(resp_dict['channel']);
+                 //var html = '应用列表:<select id="app_select" s><option value="-1">请选择应用</option>';
+                 //var json = app_values["apps"];
+                 //for (var i = 0; i < json.length; i++) {
+                  //   html += '<option value="' + i + '">' + json[i]["app_name"] + '</option>';
+                 //}
+                // html += '</select>';
+                 //$('#sel').html(html);
+             },
+             error: function (XMLHttpRequest, textStatus, errorThrown) {
+                 //console.log(XMLHttpRequest);
+                 //console.log(textStatus);
+                 //console.log(errorThrown);
+                 console.log(1);
+             }
+         })
+         //alert("11")
+         //$("#form").submit();
+
      })
 </script>
 

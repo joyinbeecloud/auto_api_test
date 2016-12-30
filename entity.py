@@ -57,6 +57,8 @@ class beecloud_app():
     subs_appSecret = '8aaad136-b899-4793-9564-0ebc72ae86f2'
     offlineAPP_app_id="9455b4a3-e450-4e99-9cdb-6a74cd7a3417"
     offlineAPP_app_secret="798c96a2-56bf-4048-a433-bc35173dc937"
+    dateMove_app_id='afae2a33-c9cb-4139-88c9-af5c1df472e1'
+    dateMove_app_secret ='fc8865bb-9dca-454e-ba8e-0d8ed6cc83a2'
 
 
 
