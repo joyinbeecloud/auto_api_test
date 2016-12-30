@@ -358,11 +358,11 @@ def deal_with_pay(channel,resp,fp):
         if 'html' in resp.keys():
             if resp['result_code'] == 0 and resp['html'] != '':
                 print(resp)
-                file_html_name = "E:\python learning\\auto_api_test\\pay_web.html"
+                file_html_name = "D:\project\\auto_api_test\Result\\pay_web.html"
                 fp_html = open(file_html_name,'w+')
                 fp_html.write(resp['html'])
                 fp_html.close()
-                webbrowser.open('E:\python learning\\auto_api_test\\pay_web.html')
+                webbrowser.open(file_html_name)
 
             else:
                 print(resp)
@@ -375,7 +375,7 @@ def deal_with_pay(channel,resp,fp):
 
 if __name__ == "__main__":
     notify_url = "https://apihz.beecloud.cn/1/pay/webhook/receiver/9ce8115c-dc1f-4ab0-b776-ad9747e5ab4a"
-    file_name = "E:\python learning\\auto_api_test\\Result\\auto_api_log" + str(
+    file_name = "D:\project\\auto_api_test\Result\\auto_api_log" + str(
         time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))) + ".txt"
     fp = open(file_name, 'w+')  # w+是新写  a+是续写
     tt = int(time.time()) * 1000

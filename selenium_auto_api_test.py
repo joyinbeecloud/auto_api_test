@@ -307,7 +307,7 @@ def auth(fp,host):
 
 if __name__=="__main__":
     notify_url="https://apihz.beecloud.cn/1/pay/webhook/receiver/9ce8115c-dc1f-4ab0-b776-ad9747e5ab4a"
-    file_name = "E:\python learning\\auto_api_test\\Result\\auto_api_log"+str(time.strftime("%Y%m%d%H%M%S",time.localtime(time.time())))+".txt"
+    file_name = "D:\project\\auto_api_test\Result\\auto_api_log"+str(time.strftime("%Y%m%d%H%M%S",time.localtime(time.time())))+".txt"
     fp = open(file_name, 'w+')#w+是新写  a+是续写
     tt=int(time.time())*1000
     host=gl.host
